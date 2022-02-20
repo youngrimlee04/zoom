@@ -1,2 +1,2 @@
 # Zoom
-Zoom Clone using Nodejs, WebRTC and Websockets.
+Making peer to peer service like Zoom using Nodejs, WebRTC and Websockets.
