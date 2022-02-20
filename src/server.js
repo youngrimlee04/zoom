@@ -16,35 +16,20 @@ const httpServer = http.createServer(app);
 const wsServer = SocketIO(httpServer);
 
 wsServer.on("connection", (socket) => {
-  socket.on("enter_room", (roomName, done) => {
-    console.log(roomName);
-    setTimeout(() => {
-      done("hello from the backend");
-    }, 15000);
+  socket.on("join_room", (roomName) => {
+    socket.join(roomName);
+    socket.to(roomName).emit("welcome");
+  });
+  socket.on("offer", (offer, roomName) => {
+    socket.to(roomName).emit("offer", offer);
+  });
+  socket.on("answer", (answer, roomName) => {
+    socket.to(roomName).emit("answer", answer);
+  });
+  socket.on("ice", (ice, roomName) => {
+    socket.to(roomName).emit("ice", ice);
   });
 });
 
-// const wss = new WebSocket.Server({ server });
-// const sockets = [];
-
-// wss.on("connection", (socket) => {
-//     sockets.push(socket);
-//     socket["nickname"] = "Anon";
-//     console.log("Connected to Browser ✅");
-//     socket.on("close", onSocketClose);
-
-//     socket.on("message", (msg) => {
-//       const message = JSON.parse(msg);
-//       switch (message.type) {
-//         case "new_message":
-//           sockets.forEach((aSocket) =>
-//             aSocket.send(`${socket.nickname}: ${message.payload}`)
-//           );
-//         case "nickname":
-//           socket["nickname"] = message.payload;
-//       }
-//     });
-//   });
-
-  const handleListen = () => console.log(`Listening on http://localhost:3000`);
-  httpServer.listen(3000, handleListen);
+const handleListen = () => console.log(`Listening on http://localhost:3000`);
+httpServer.listen(3000, handleListen);
